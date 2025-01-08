@@ -3,13 +3,25 @@
 
 <head>
     <title>HTML Tutorial</title>
-    <link href=https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css rel="stylesheet">
-    <link rel="stylesheet" href="public/css/style.css">
+    <%- include('partials/header1.ejs')%>
 </head>
 
 <body>
     <%- include('partials/navbar1.ejs')%>
-        <h4>This is the Home Page.</h4h4>
+        <div class="container p-3 my-3 bg-dark text-white">
+            <h2>New Zealand</h2>
+            <img class="img2" src="/public/images/bridal-veil-falls-hero.jpg" alt="Bridal Veils Falls">
+            <p>
+                New Zealand is a peaceful country
+            </p>
+            <p style="color: #bab6c7;"><a href="auck">Auckland</a> is the commercial hub of New Zealand</p>
+            <p style="color: #bab6c7;">
+                Any random text Lorem lalak asdjfb Any random text Lorem lalak asdjfb Any random text Lorem lalak asdjfb
+                Any random text Lorem lalak asdjfb Any random text Lorem lalak asdjfb Any random text Lorem lalak
+                asdjfbAny random text Lorem lalak asdjfb Any random text Lorem lalak asdjfb Any random text Lorem lalak
+                asdjfb Any random text Lorem lalak asdjfb
+            </p>
+        </div>
 </body>
 
 </html>

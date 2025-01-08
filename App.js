@@ -24,6 +24,10 @@ app.get('/auck', function(req, res, next) {
 	res.render('Auckland', { title: 'Auckland Page' });
 });
 
+app.get('/beaches', function(req, res, next) {
+	res.render('beaches', { title: 'Beaches Page' });
+});
+
 app.listen(3000);
 console.log('Node app is running on port 3000');
 
