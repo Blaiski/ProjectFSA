@@ -1,8 +1,14 @@
 var express = require('express');
+var session = require('express-session');
 var path = require('path');
-var db=require('./dbConfig');
+var conn =require('./dbConfig');
  
 var app = express();
+app.use(session({
+	secret: 'dsafjdsljflaskjfqpr439809823-904lsdjf',
+	resave: true,
+	saveUninitialized: true
+}));
  
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -14,6 +20,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use(express.static(path.join(__dirname, 'public')));
+
+//==================================
+
+app.get('/login', function(req, res, next) {
+	res.render('login.ejs', { title: 'Home' });
+});
 
 app.get('/', function(req, res, next) {
 	res.render('Home', { title: 'Home' });
