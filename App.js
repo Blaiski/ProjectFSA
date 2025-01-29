@@ -23,12 +23,79 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //==================================
 
+//'use strict';
+
+//const express = require('express');
+//var session = require('express-session');
+//var MemoryStore = require('memorystore')(session)
+
+// var staticOptions = {
+//     setHeaders: function(res, path, stat) {
+        
+//         res.set('x-auth-token', session.authToken);
+//         res.set('x-id-token', session.idToken);
+
+// 		//res.req.MemoryStore
+// 		console.log('session is:',res.req.session);
+//     }
+	
+// }
+//app.use('/', express.static('public', staticOptions));
+
+//Entry Point to our app
+app.get('/', function(req, res, next) {
+	if(req.session.loggedin==true){
+		res.render('HomeMembers', { title: 'Home'});
+	}
+	else
+	{
+		res.render('Home', { title: 'Home' });
+	}
+	
+});
+
 app.get('/login', function(req, res, next) {
-	res.render('login.ejs', { title: 'Login' });
+	res.render('login', { title: 'Login' });
+});
+
+app.get('/register', function(req, res, next) {
+	res.render('register', { title: 'Register' });
+});
+
+app.post('/register', function(req,res){
+
+	res.send("This page is under construction!");
+	res.end();
+	 let username = req.body.username;
+	 let password = req.body.password;
+	
+	// if(name && password){
+	// 	connection.query(
+	// 		'SELECT * FROM users WHERE name= ? AND password=?', 
+	// 		[name, password],
+	// 		function(error, results, fields){
+	// 			console.log("Results from Database: ", results);
+	// 			if(error) throw error;//this line will force the application to terminate
+	// 			if (results.length > 0){
+	// 				req.session.loggedin = true;
+	// 				req.session.username = name;
+	// 				res.redirect('/membersOnly');
+	// 			}else{
+	// 				res.send('Incorrect Username and/or Password!');
+	// 			}
+	// 			res.end();
+	// 		}
+	// 	);
+	// }
+	// ///execution will jump to this line if either name or password was null/nondefined
+	// else{
+	// 	res.send("Please enter Username and Password!");
+	// 	res.end();
+	// }
 });
 
 app.get('/membersOnly', function(req, res, next) {
-	if(req.session.loggedin){
+	if(req.session.loggedin==true){
 		res.render('membersOnly');
 	}
 	else{
@@ -36,13 +103,15 @@ app.get('/membersOnly', function(req, res, next) {
 	}
 });
 
-app.get('/', function(req, res, next) {
-	res.render('Home', { title: 'Home' });
-});
-
 
 app.get('/auck', function(req, res, next) {
-	res.render('Auckland', { title: 'Auckland Page' });
+	if(req.session.loggedin==true){
+		res.render('Auckland', { title: 'Auckland Page' });
+	}
+	else{
+		res.send('Sorry, this page is restricted, please login to access it!');
+	}
+	
 });
 
 app.get('/beaches', function(req, res, next) {
@@ -50,7 +119,6 @@ app.get('/beaches', function(req, res, next) {
 });
 
 //app.get('/auth', function(reg,res){});
-
 app.post('/auth', function(req,res){
 	let name = req.body.username;
 	let password = req.body.password;
@@ -60,6 +128,7 @@ app.post('/auth', function(req,res){
 			'SELECT * FROM users WHERE name= ? AND password=?', 
 			[name, password],
 			function(error, results, fields){
+				console.log("Results from Database: ", results);
 				if(error) throw error;//this line will force the application to terminate
 				if (results.length > 0){
 					req.session.loggedin = true;
