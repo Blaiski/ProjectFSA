@@ -7,13 +7,14 @@
 </head>
 
 <body>
-    <%- include('partials/navbar1.ejs')%>
-
-    <% if (session.user) { %>
+    <% if (session.loggedin) { %>
         <p>Welcome, <%= session.username %>!</p>
+        <%- include('partials/navbar2.ejs')%>
       <% } else { %>
         <p>Please log in.</p>
+        <%- include('partials/navbar1.ejs')%>
       <% } %>
+      
         <div class="container p-3 my-3 bg-dark text-white">
             <h2>New Zealand</h2>
             <img class="img2" src="/public/images/bridal-veil-falls-hero.jpg" alt="Bridal Veils Falls">

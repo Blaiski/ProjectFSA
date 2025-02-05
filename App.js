@@ -44,13 +44,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //Entry Point to our app
 app.get('/', function(req, res, next) {
-	if(req.session.loggedin==true){
-		res.render('HomeMembers', { title: 'Home'});
-	}
-	else
-	{
-		res.render('Home', { session: req.session  });
-	}
+	
+	res.render('Home', { session: req.session});
 	
 });
 
