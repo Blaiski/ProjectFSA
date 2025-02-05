@@ -1,21 +1,21 @@
 var express = require('express');
 var session = require('express-session');
 var path = require('path');
-var connection =require('./dbConfig');
- 
+var connection = require('./dbConfig');
+
 var app = express();
 app.use(session({
 	secret: 'dsafjdsljflaskjfqpr439809823-904lsdjf',
 	resave: true,
 	saveUninitialized: true
 }));
- 
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 app.use('/public', express.static('public'));
- 
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -31,122 +31,109 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // var staticOptions = {
 //     setHeaders: function(res, path, stat) {
-        
+
 //         res.set('x-auth-token', session.authToken);
 //         res.set('x-id-token', session.idToken);
 
 // 		//res.req.MemoryStore
 // 		console.log('session is:',res.req.session);
 //     }
-	
+
 // }
 //app.use('/', express.static('public', staticOptions));
 
 //Entry Point to our app
-app.get('/', function(req, res, next) {
-	
-	res.render('Home', { session: req.session});
-	
+app.get('/', function (req, res, next) {
+
+	res.render('Home', { session: req.session });
+
 });
 
-app.get('/login', function(req, res, next) {
+app.get('/login', function (req, res, next) {
 	res.render('login', { title: 'Login' });
 });
 
-app.get('/register', function(req, res, next) {
+app.get('/register', function (req, res, next) {
 	res.render('register', { title: 'Register' });
 });
 
-app.post('/register', function(req,res){
+app.post('/register', function (req, res) {
 
-	///!!!!! This line below was the bug//////
-	res.send("This page is under construction!");
-	
-	 let username = req.body.username;
-	 let email = req.body.email;
-	 let password = req.body.password;
-	 let passwordVer = req.body.passwordVer;
+	let username = req.body.username;
+	let email = req.body.email;
+	let password = req.body.password;
+	let passwordVer = req.body.passwordVer;
 
-	 if(password==passwordVer)
-	 {
-		console.log(`Username Value: ${username}`);
-		console.log(`Email Value: ${email}`);
-		console.log(`Password Value: ${password}`);
-		console.log(`PasswordVer Value: ${passwordVer}`);
+	if (password == passwordVer) {
+		connection.query(
+			`INSERT INTO users(name, password, email) VALUES ( "${username}", "${password}", "${email}")`,
+			
+			function (error, results, fields) {
+				if(error){
+					console.log('Oops some error occured executing the SQL query', error);
+				}	
+				else{
+					console.log('new user record has been entered successfully entered into the database');
+					req.session.newUser = username;
+					res.render('Home', {session: req.session} );
+				}
+			}
+		);
 
-	 }
-	 else{
+		// console.log(`Username Value: ${username}`);
+		// console.log(`Email Value: ${email}`);
+		// console.log(`Password Value: ${password}`);
+		// console.log(`PasswordVer Value: ${passwordVer}`);
+
+	}
+	else {
 		res.send("Oops! your passwords don't match");
 		//res.end();
-	 }
-	 
-	 
-	// if(name && password){
-	// 	connection.query(
-	// 		'SELECT * FROM users WHERE name= ? AND password=?', 
-	// 		[name, password],
-	// 		function(error, results, fields){
-	// 			console.log("Results from Database: ", results);
-	// 			if(error) throw error;//this line will force the application to terminate
-	// 			if (results.length > 0){
-	// 				req.session.loggedin = true;
-	// 				req.session.username = name;
-	// 				res.redirect('/membersOnly');
-	// 			}else{
-	// 				res.send('Incorrect Username and/or Password!');
-	// 			}
-	// 			res.end();
-	// 		}
-	// 	);
-	// }
-	// ///execution will jump to this line if either name or password was null/nondefined
-	// else{
-	// 	res.send("Please enter Username and Password!");
-	// 	res.end();
-	// }
+	}
+
 });
 
-app.get('/membersOnly', function(req, res, next) {
-	if(req.session.loggedin==true){
+app.get('/membersOnly', function (req, res, next) {
+	if (req.session.loggedin == true) {
 		res.render('membersOnly');
 	}
-	else{
+	else {
 		res.send('Please login to view this page!');
 	}
 });
 
 
-app.get('/auck', function(req, res, next) {
-	if(req.session.loggedin==true){
+app.get('/auck', function (req, res, next) {
+	if (req.session.loggedin == true) {
 		res.render('Auckland', { title: 'Auckland Page' });
 	}
-	else{
+	else {
 		res.send('Sorry, this page is restricted, please login to access it!');
 	}
-	
+
 });
 
-app.get('/beaches', function(req, res, next) {
+app.get('/beaches', function (req, res, next) {
 	res.render('beaches', { title: 'Beaches Page' });
 });
 
 //app.get('/auth', function(reg,res){});
-app.post('/auth', function(req,res){
+app.post('/auth', function (req, res) {
 	let name = req.body.username;
 	let password = req.body.password;
-	
-	if(name && password){
+
+	if (name && password) {
 		connection.query(
-			'SELECT * FROM users WHERE name= ? AND password=?', 
+			'SELECT * FROM users WHERE name= ? AND password=?',
 			[name, password],
-			function(error, results, fields){
+			function (error, results, fields) {
 				console.log("Results from Database: ", results);
-				if(error) throw error;//this line will force the application to terminate
-				if (results.length > 0){
+				if (error) throw error;//this line will force the application to terminate
+				if (results.length > 0) {
 					req.session.loggedin = true;
 					req.session.username = name;
 					res.redirect('/membersOnly');
-				}else{
+				} else {
 					res.send('Incorrect Username and/or Password!');
 				}
 				res.end();
@@ -154,13 +141,13 @@ app.post('/auth', function(req,res){
 		);
 	}
 	///execution will jump to this line if either name or password was null/nondefined
-	else{
+	else {
 		res.send("Please enter Username and Password!");
 		res.end();
 	}
 });
 
-app.get('/logout', (req,res)=>{
+app.get('/logout', (req, res) => {
 	req.session.destroy();
 	res.redirect('/');
 })
