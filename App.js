@@ -49,7 +49,7 @@ app.get('/', function(req, res, next) {
 	}
 	else
 	{
-		res.render('Home', { title: 'Home' });
+		res.render('Home', { session: req.session  });
 	}
 	
 });
@@ -64,11 +64,28 @@ app.get('/register', function(req, res, next) {
 
 app.post('/register', function(req,res){
 
+	///!!!!! This line below was the bug//////
 	res.send("This page is under construction!");
-	res.end();
-	 let username = req.body.username;
-	 let password = req.body.password;
 	
+	 let username = req.body.username;
+	 let email = req.body.email;
+	 let password = req.body.password;
+	 let passwordVer = req.body.passwordVer;
+
+	 if(password==passwordVer)
+	 {
+		console.log(`Username Value: ${username}`);
+		console.log(`Email Value: ${email}`);
+		console.log(`Password Value: ${password}`);
+		console.log(`PasswordVer Value: ${passwordVer}`);
+
+	 }
+	 else{
+		res.send("Oops! your passwords don't match");
+		//res.end();
+	 }
+	 
+	 
 	// if(name && password){
 	// 	connection.query(
 	// 		'SELECT * FROM users WHERE name= ? AND password=?', 
