@@ -95,7 +95,16 @@ app.post('/register', function (req, res) {
 
 app.get('/membersOnly', function (req, res, next) {
 	if (req.session.loggedin == true) {
-		res.render('membersOnly');
+
+		connection.query("SELECT * FROM users", function(error, records){
+			if (error) {
+				console.warn(`Error reading users from database`, error);
+			}
+			else{
+				console.log(records);
+				res.render('membersOnly',{users: records});
+			}
+		});
 	}
 	else {
 		res.send('Please login to view this page!');
