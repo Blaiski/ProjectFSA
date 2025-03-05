@@ -1,5 +1,6 @@
 var express = require('express');
 var session = require('express-session');
+var bcrypt = require('bcrypt');
 var path = require('path');
 var connection = require('./dbConfig');
 
@@ -65,8 +66,12 @@ app.post('/register', function (req, res) {
 	let passwordVer = req.body.passwordVer;
 
 	if (password == passwordVer) {
+
+		const hashedPassword = bcrypt.hashSync(password, 10);
+		console.log('Hashed Password: ', hashedPassword);
+
 		connection.query(
-			`INSERT INTO users(name, password, email) VALUES ( "${username}", "${password}", "${email}")`,
+			`INSERT INTO users(name, password, email) VALUES ( "${username}", "${hashedPassword}", "${email}")`,
 			
 			function (error, results, fields) {
 				if(error){
@@ -133,15 +138,21 @@ app.post('/auth', function (req, res) {
 
 	if (name && password) {
 		connection.query(
-			'SELECT * FROM users WHERE name= ? AND password=?',
-			[name, password],
+			'SELECT * FROM users WHERE name= ?',
+			[name],
 			function (error, results, fields) {
 				console.log("Results from Database: ", results);
 				if (error) throw error;//this line will force the application to terminate
 				if (results.length > 0) {
-					req.session.loggedin = true;
-					req.session.username = name;
-					res.redirect('/membersOnly');
+					const userData = results[0];
+					const passwordMatch = bcrypt.compareSync(password, userData.password);
+					if(passwordMatch){
+						console.log('Password Match', passwordMatch);
+						req.session.loggedin = true;
+						req.session.username = name;
+						res.redirect('/membersOnly');
+					}
+					
 				} else {
 					res.send('Incorrect Username and/or Password!');
 				}
@@ -172,3 +183,5 @@ console.log('Node app is running on port 3000');
 // 		res.render('getData', { title: 'Customer Data', customerData: result});
 // 	});
 // });
+
+
