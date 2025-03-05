@@ -70,12 +70,7 @@ app.post('/register', function (req, res) {
 		const hashedPassword = bcrypt.hashSync(password, 10);
 		console.log('Hashed Password: ', hashedPassword);
 
-
-		const hashedPassword = bcrypt.hashSync(password, 10);
-		console.log('Hashed Password: ', hashedPassword);
-
 		connection.query(
-			`INSERT INTO users(name, password, email) VALUES ( "${username}", "${hashedPassword}", "${email}")`,
 			`INSERT INTO users(name, password, email) VALUES ( "${username}", "${hashedPassword}", "${email}")`,
 			
 			function (error, results, fields) {
@@ -158,15 +153,6 @@ app.post('/auth', function (req, res) {
 						res.redirect('/membersOnly');
 					}
 					
-					const userData = results[0];
-					const passwordMatch = bcrypt.compareSync(password, userData.password);
-					if(passwordMatch){
-						console.log('Password Match', passwordMatch);
-						req.session.loggedin = true;
-						req.session.username = name;
-						res.redirect('/membersOnly');
-					}
-					
 				} else {
 					res.send('Incorrect Username and/or Password!');
 				}
@@ -197,65 +183,3 @@ console.log('Node app is running on port 3000');
 // 		res.render('getData', { title: 'Customer Data', customerData: result});
 // 	});
 // });
-
-
-
-
-
-
-// function authenticate(request, response) {
-// 	console.log('Login Request', request.body);
-  
-// 	conn.query('SELECT * FROM users WHERE username = ?', [request.body.username], function (error, results, fields) {
-// 	  if (error) throw error;
-// 	  console.log('User found in database', results);
-  
-// 	  if (results.length > 0 && results[0] !== undefined) {
-// 		var user = results[0];
-// 		console.log('User', user);
-// 		var passwordMatch = bcrypt.compareSync(request.body.password, user.password);
-// 		console.log('Password Match', passwordMatch);
-  
-// 		if (passwordMatch) {
-// 		  request.session.username = request.body.username;
-// 		  request.session.loggedIn = true;
-// 		  response.redirect('/product');
-// 		  response.end();
-// 		} else {
-// 		  response.redirect('/login');
-// 		  response.end();
-// 		}
-// 	  } else {
-// 		response.send('User not found');
-// 	  }
-// 	});
-//   }
-
-
-//   function register(request, response) {
-// 	console.log('Register Request', request.body);
-  
-// 	if (request.body.password != request.body.password_confirm) {
-// 	  console.log('Password not match');
-// 	  response.redirect('/register');
-// 	  response.end();
-// 	} else {
-// 	  console.log('Password match');
-// 	  // Hash the password
-  
-// 	  var hashedPassword = bcrypt.hashSync(request.body.password, 10);
-// 	  console.log('Hashed Password', hashedPassword);
-  
-// 	  // ADD TO DATABASE
-  
-// 	  conn.query(
-// 		'INSERT INTO users (username, password) VALUES (?, ?)',
-// 		[request.body.username, hashedPassword],
-// 		function (error, results, fields) {
-// 		  if (error) throw error;
-// 		  console.log('User added to database');
-// 		  response.redirect('/login');
-// 		},
-// 	  );
-// 	}
-//   }
