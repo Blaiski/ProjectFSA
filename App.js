@@ -51,8 +51,9 @@ app.get('/', function (req, res, next) {
 });
 
 app.get('/login', function (req, res, next) {
-	res.render('login', { title: 'Login' });
+	//res.render('login', { title: 'Login' });
 });
+//added line of comment
 
 app.get('/register', function (req, res, next) {
 	res.render('register', { title: 'Register' });
