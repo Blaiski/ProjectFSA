@@ -11,6 +11,8 @@ app.use(session({
 	saveUninitialized: true
 }));
 
+
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -184,3 +186,10 @@ console.log('Node app is running on port 3000');
 // 		res.render('getData', { title: 'Customer Data', customerData: result});
 // 	});
 // });
+
+// mathUtils.js
+function add(a, b) {
+  return a + b;
+}
+
+module.exports = { add };
