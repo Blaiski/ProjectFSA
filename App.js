@@ -192,4 +192,8 @@ function add(a, b) {
   return a + b;
 }
 
+function twoFactorAuth(){
+
+}
+
 module.exports = { add };
