@@ -196,4 +196,8 @@ function twoFactorAuth(){
 //I'm done now.
 }
 
+function passwordReset(){
+//I'm done now.
+}
+
 module.exports = { add };
